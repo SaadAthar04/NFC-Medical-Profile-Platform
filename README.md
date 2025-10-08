@@ -241,12 +241,6 @@ This is a proprietary project. For contributions, please contact the development
 
 Proprietary - All rights reserved
 
-## 📞 Support
-
-- Email: support@medguard.com
-- Phone: +1 (555) 123-4567
-- Website: https://medguard.com
-
 ## 🙏 Acknowledgments
 
 - Design inspiration from leading healthcare platforms
