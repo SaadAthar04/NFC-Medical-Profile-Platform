@@ -1,8 +1,9 @@
 'use client'
 
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { 
   Shield, 
   ArrowRight,
@@ -25,46 +26,115 @@ import Footer from '@/components/layout/Footer'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 
+// Load 3D components only on client-side (no SSR)
+const BraceletModel = dynamic(() => import('@/components/3d/BraceletModel'), { 
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-96 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading 3D Model...</p>
+      </div>
+    </div>
+  )
+})
+
+const BraceletModal = dynamic(() => import('@/components/3d/BraceletModal'), { 
+  ssr: false 
+})
+
 export default function Home() {
-  const [isHovering, setIsHovering] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('yearly')
+  const [is3DModalOpen, setIs3DModalOpen] = useState(false)
   
-  // Mouse position tracking for 3D effect
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [5, -5]), {
-    stiffness: 150,
-    damping: 20
-  })
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-5, 5]), {
-    stiffness: 150,
-    damping: 20
-  })
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isHovering) return
-    const rect = e.currentTarget.getBoundingClientRect()
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
-    const x = (e.clientX - centerX) / (rect.width / 2)
-    const y = (e.clientY - centerY) / (rect.height / 2)
-    mouseX.set(x)
-    mouseY.set(y)
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovering(false)
-    mouseX.set(0)
-    mouseY.set(0)
-  }
+  useEffect(() => {
+    // Show loading screen for 1.5 seconds
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 1500)
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <div className="bg-white overflow-hidden">
-      <Navbar />
+      {/* Loading Screen */}
+      <AnimatePresence mode="wait">
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-white via-primary-50/20 to-white"
+          >
+            <div className="relative flex items-center justify-center">
+              {/* Multiple pulse rings */}
+              <motion.div
+                animate={{
+                  scale: [1, 2.5, 1],
+                  opacity: [0.3, 0, 0.3]
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity,
+                  ease: "easeOut"
+                }}
+                className="absolute w-20 h-20 rounded-full border-4 border-primary-500"
+              />
+              <motion.div
+                animate={{
+                  scale: [1, 2.5, 1],
+                  opacity: [0.3, 0, 0.3]
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity,
+                  ease: "easeOut",
+                  delay: 0.5
+                }}
+                className="absolute w-20 h-20 rounded-full border-4 border-primary-600"
+              />
 
-      {/* Hero Section - Emotional Storytelling */}
-      <section className="relative min-h-screen flex items-center justify-center pt-16 pb-20 bg-gradient-to-b from-white via-primary-50/30 to-white">
+              {/* Rotating Plus Sign */}
+              <motion.div
+                animate={{ 
+                  rotate: 360,
+                }}
+                transition={{ 
+                  rotate: { duration: 1.5, repeat: Infinity, ease: "linear" }
+                }}
+                className="relative z-10 bg-white rounded-2xl p-4 shadow-2xl"
+              >
+                <motion.div
+                  animate={{
+                    scale: [1, 1.1, 1]
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <Plus className="w-16 h-16 text-primary-600" strokeWidth={4} />
+                </motion.div>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Content - Only show after loading */}
+      {!isLoading && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <Navbar />
+
+          {/* Hero Section - Emotional Storytelling */}
+          <section className="relative min-h-screen flex items-center justify-center pt-16 pb-20 bg-gradient-to-b from-white via-primary-50/30 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left: Emotional Story */}
@@ -75,7 +145,7 @@ export default function Home() {
                 transition={{ duration: 0.8 }}
               >
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 tracking-tight text-gray-900 leading-tight">
-                  Collapsed at a mall? <span className="bg-gradient-to-r from-primary-600 to-emerald-600 bg-clip-text text-transparent whitespace-nowrap">Your bracelet saves you.</span>
+                  Collapsed at a mall? <span className="bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent whitespace-nowrap">Your bracelet saves you.</span>
                 </h1>
 
                 <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-6 leading-relaxed">
@@ -134,121 +204,86 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* Right: Interactive Product */}
+            {/* Right: Interactive 3D Product */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, delay: 0.3 }}
               className="relative"
-              style={{ perspective: '1000px' }}
-              onMouseMove={handleMouseMove}
-              onMouseEnter={() => setIsHovering(true)}
-              onMouseLeave={handleMouseLeave}
             >
-              <motion.div
-                style={{
-                  rotateX,
-                  rotateY,
-                  transformStyle: 'preserve-3d',
-                }}
-                className="relative"
-              >
-                <div className="relative h-96 flex items-center justify-center">
+              <div className="relative">
+                {/* 3D Bracelet Model - Clickable */}
+                <motion.div 
+                  className="relative cursor-pointer group"
+                  onClick={() => setIs3DModalOpen(true)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <BraceletModel />
+                  
+                  {/* Hover overlay hint */}
                   <motion.div
-                    className="relative w-full max-w-md"
-                    style={{ transformStyle: 'preserve-3d' }}
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                    className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent rounded-2xl flex items-end justify-center pb-8 pointer-events-none"
                   >
-                    {/* The Band */}
-                    <motion.div
-                      className="relative h-28 mx-auto rounded-full overflow-hidden"
-                      style={{ 
-                        width: '90%',
-                        background: 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)',
-                        boxShadow: '0 30px 60px -15px rgba(16, 185, 129, 0.5), 0 0 0 1px rgba(255,255,255,0.1) inset'
-                      }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-black/20"></div>
-                      
-                      <motion.div
-                        animate={{ x: ['-100%', '200%'] }}
-                        transition={{ duration: 3, repeat: Infinity, repeatDelay: 2, ease: "easeInOut" }}
-                        className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12"
-                      />
-
-                      <motion.div
-                        animate={{ scale: [1, 1.08, 1] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-gradient-to-br from-white to-gray-100 rounded-full flex items-center justify-center shadow-2xl"
-                        style={{ boxShadow: '0 0 0 4px rgba(16, 185, 129, 0.2), 0 8px 16px rgba(0,0,0,0.2)' }}
-                      >
-                        <motion.div
-                          animate={{
-                            boxShadow: [
-                              '0 0 0 0 rgba(16, 185, 129, 0.7)',
-                              '0 0 0 15px rgba(16, 185, 129, 0)',
-                            ]
-                          }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                          className="absolute inset-0 rounded-full"
-                        />
-                        <Shield className="h-10 w-10 text-primary-600 relative z-10" />
-                      </motion.div>
-                      
-                      <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-primary-500 via-emerald-500 to-primary-500 opacity-30 blur-3xl -z-10"></div>
-                      <div className="absolute inset-2 rounded-full border border-white/10"></div>
-                    </motion.div>
-
-                    {/* Info Cards */}
-                    <motion.div
-                      initial={{ opacity: 0, x: -30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.6 }}
-                      className="absolute -left-4 top-1/3"
-                      style={{ transformStyle: 'preserve-3d', transform: 'translateZ(50px)' }}
-                    >
-                      <motion.div
-                        animate={{ y: [0, -10, 0] }}
-                        transition={{ duration: 3, repeat: Infinity }}
-                        className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-gray-200"
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
-                            <Heart className="h-5 w-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-500">Blood Type</p>
-                            <p className="text-xl font-bold">O+</p>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </motion.div>
-
-                    <motion.div
-                      initial={{ opacity: 0, x: 30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.6 }}
-                      className="absolute -right-4 top-2/3"
-                      style={{ transformStyle: 'preserve-3d', transform: 'translateZ(50px)' }}
-                    >
-                      <motion.div
-                        animate={{ y: [0, 10, 0] }}
-                        transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
-                        className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-gray-200"
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-emerald-600 rounded-xl flex items-center justify-center">
-                            <Zap className="h-5 w-5 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-500">Access</p>
-                            <p className="text-base font-bold text-primary-600">&lt;2 sec</p>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </motion.div>
+                    <div className="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-primary-200">
+                      <span className="text-primary-600 font-semibold text-sm flex items-center gap-2">
+                        <Plus className="w-4 h-4" />
+                        Click to view in 360°
+                      </span>
+                    </div>
                   </motion.div>
-                </div>
-              </motion.div>
+                </motion.div>
+
+                {/* Info Cards */}
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="absolute -left-4 top-1/3 z-10"
+                >
+                  <motion.div
+                    animate={{ y: [0, -10, 0] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                    className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-gray-200"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
+                        <Heart className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Blood Type</p>
+                        <p className="text-xl font-bold">O+</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="absolute -right-4 top-2/3 z-10"
+                >
+                  <motion.div
+                    animate={{ y: [0, 10, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
+                    className="bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-xl border border-gray-200"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
+                        <Zap className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Access</p>
+                        <p className="text-base font-bold text-primary-600">&lt;2 sec</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              </div>
 
               <motion.p
                 initial={{ opacity: 0 }}
@@ -260,7 +295,7 @@ export default function Home() {
                   animate={{ opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  Hover to see 3D effect
+                  Drag to rotate • Click bracelet for 360° view
                 </motion.span>
               </motion.p>
             </motion.div>
@@ -458,7 +493,7 @@ export default function Home() {
                   <motion.div
                     whileHover={{ rotate: 360 }}
                     transition={{ duration: 0.6 }}
-                    className="w-16 h-16 bg-gradient-to-r from-primary-600 to-emerald-600 rounded-2xl flex items-center justify-center mb-5 mx-auto"
+                    className="w-16 h-16 bg-gradient-to-r from-primary-600 to-primary-800 rounded-2xl flex items-center justify-center mb-5 mx-auto"
                   >
                     <span className="text-3xl font-bold text-white">{item.step}</span>
                   </motion.div>
@@ -476,7 +511,7 @@ export default function Home() {
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.8, delay: 0.5 + index * 0.2 }}
-                    className="hidden md:block absolute top-24 -right-6 w-12 h-1 bg-gradient-to-r from-primary-400 to-emerald-400 origin-left"
+                    className="hidden md:block absolute top-24 -right-6 w-12 h-1 bg-gradient-to-r from-primary-400 to-primary-600 origin-left"
                   >
                     <ArrowRight className="absolute -right-3 -top-3 h-4 w-4 text-primary-500" />
                   </motion.div>
@@ -589,7 +624,7 @@ export default function Home() {
                 className="relative"
               >
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary-600 to-emerald-600 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary-600 to-primary-800 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
                     Most Popular
                   </div>
                 )}
@@ -620,7 +655,7 @@ export default function Home() {
                     <Button 
                       className={`w-full py-4 text-lg font-bold rounded-xl ${
                         plan.popular 
-                          ? 'bg-gradient-to-r from-primary-600 to-emerald-600 text-white hover:shadow-xl' 
+                          ? 'bg-gradient-to-r from-primary-600 to-primary-800 text-white hover:shadow-xl' 
                           : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                       }`}
                     >
@@ -647,7 +682,7 @@ export default function Home() {
       {/* Final CTA - Less Generic */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-primary-600 to-emerald-600 rounded-3xl p-12 md:p-16 relative overflow-hidden">
+          <div className="bg-gradient-to-br from-primary-600 to-primary-800 rounded-3xl p-12 md:p-16 relative overflow-hidden">
             {/* Background pattern */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
@@ -710,6 +745,11 @@ export default function Home() {
       </section>
 
       <Footer />
+        </motion.div>
+      )}
+
+      {/* 3D Bracelet Modal */}
+      <BraceletModal isOpen={is3DModalOpen} onClose={() => setIs3DModalOpen(false)} />
     </div>
   )
 }
