@@ -41,7 +41,7 @@ export default function DashboardNav() {
             <div className="p-2 bg-primary-600 rounded-lg">
               <Shield className="h-5 w-5 text-white" />
             </div>
-            <span className="text-lg font-bold text-gray-900">MedGuard</span>
+            <span className="text-lg font-bold text-gray-900">MedID</span>
           </Link>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -77,7 +77,7 @@ export default function DashboardNav() {
               >
                 <Shield className="h-6 w-6 text-white" />
               </motion.div>
-              <span className="text-xl font-bold text-gray-900">MedGuard</span>
+              <span className="text-xl font-bold text-gray-900">MedID</span>
             </Link>
           </div>
 

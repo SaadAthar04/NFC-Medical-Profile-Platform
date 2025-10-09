@@ -42,15 +42,15 @@ export default function BraceletModal({ isOpen, onClose }: BraceletModalProps) {
               rotateX: -15,
               transition: { duration: 0.3 }
             }}
-            className="fixed inset-4 md:inset-10 z-50 bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl shadow-2xl overflow-hidden"
+            className="fixed inset-4 sm:inset-6 md:inset-10 lg:inset-20 z-50 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
             style={{ perspective: 1000 }}
           >
             {/* Header */}
-            <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-gray-900/90 to-transparent p-6">
+            <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-gray-900/90 to-transparent p-4 sm:p-6">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-2xl font-bold text-white">InstantWrist Bracelet</h3>
-                  <p className="text-gray-400 text-sm mt-1">Drag to rotate • Scroll to zoom</p>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white">InstantWrist Bracelet</h3>
+                  <p className="text-gray-400 text-xs sm:text-sm mt-1 hidden sm:block">Drag to rotate • Scroll to zoom</p>
                 </div>
                 <button
                   onClick={onClose}
@@ -67,36 +67,36 @@ export default function BraceletModal({ isOpen, onClose }: BraceletModalProps) {
             </div>
 
             {/* Info Cards */}
-            <div className="absolute bottom-6 left-6 right-6 z-10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 z-10">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20"
+                  className="bg-white/10 backdrop-blur-md rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20"
                 >
-                  <div className="text-primary-400 font-semibold text-sm mb-1">Material</div>
-                  <div className="text-white font-bold">Medical-Grade Silicone</div>
+                  <div className="text-primary-400 font-semibold text-xs sm:text-sm mb-1">Material</div>
+                  <div className="text-white font-bold text-sm sm:text-base">Medical-Grade Silicone</div>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20"
+                  className="bg-white/10 backdrop-blur-md rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20"
                 >
-                  <div className="text-primary-400 font-semibold text-sm mb-1">Technology</div>
-                  <div className="text-white font-bold">NFC + QR Backup</div>
+                  <div className="text-primary-400 font-semibold text-xs sm:text-sm mb-1">Technology</div>
+                  <div className="text-white font-bold text-sm sm:text-base">NFC + QR Backup</div>
                 </motion.div>
 
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
-                  className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20"
+                  className="bg-white/10 backdrop-blur-md rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/20"
                 >
-                  <div className="text-primary-400 font-semibold text-sm mb-1">Battery</div>
-                  <div className="text-white font-bold">No Battery Required</div>
+                  <div className="text-primary-400 font-semibold text-xs sm:text-sm mb-1">Battery</div>
+                  <div className="text-white font-bold text-sm sm:text-base">No Battery Required</div>
                 </motion.div>
               </div>
             </div>

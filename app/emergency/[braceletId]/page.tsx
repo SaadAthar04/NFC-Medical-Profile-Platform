@@ -392,8 +392,8 @@ export default function EmergencyProfilePage({ params }: { params: { braceletId:
 
         {/* Footer */}
         <div className="mt-8 text-center text-sm text-gray-600">
-          <p>Powered by MedGuard • Secure Emergency Medical Profiles</p>
-          <p className="mt-1">For support or to report issues: support@medguard.com</p>
+          <p>Powered by MedID • Secure Emergency Medical Profiles</p>
+          <p className="mt-1">For support or to report issues: support@instantwrist.ca</p>
         </div>
       </div>
     </div>

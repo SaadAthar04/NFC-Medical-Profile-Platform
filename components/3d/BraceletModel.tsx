@@ -101,7 +101,7 @@ function Bracelet() {
 export default function BraceletModel({ inModal = false }: { inModal?: boolean }) {
   return (
     <div className={inModal ? "w-full h-full" : "w-full h-96"}>
-      <Canvas>
+      <Canvas dpr={[1, 2]} performance={{ min: 0.5 }}>
         <PerspectiveCamera makeDefault position={[0, 2, 6]} />
         
         {/* Lighting */}

@@ -10,6 +10,14 @@ export const metadata: Metadata = {
   keywords: 'NFC, medical profile, emergency contact, health information, medical bracelet',
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#dc2626',
+}
+
 export default function RootLayout({
   children,
 }: {

@@ -20,6 +20,7 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Badge from '@/components/ui/Badge'
+import { cn } from '@/lib/utils'
 
 interface User {
   id: string
@@ -151,8 +152,20 @@ export default function AdminPage() {
             >
               <Card hover>
                 <div className="flex items-center justify-between mb-2">
-                  <div className={`p-3 rounded-xl bg-${stat.color}-100`}>
-                    <stat.icon className={`h-6 w-6 text-${stat.color}-600`} />
+                  <div className={cn(
+                    'p-3 rounded-xl',
+                    stat.color === 'primary' && 'bg-primary-100',
+                    stat.color === 'green' && 'bg-green-100',
+                    stat.color === 'blue' && 'bg-blue-100',
+                    stat.color === 'purple' && 'bg-purple-100'
+                  )}>
+                    <stat.icon className={cn(
+                      'h-6 w-6',
+                      stat.color === 'primary' && 'text-primary-600',
+                      stat.color === 'green' && 'text-green-600',
+                      stat.color === 'blue' && 'text-blue-600',
+                      stat.color === 'purple' && 'text-purple-600'
+                    )} />
                   </div>
                   <span className="text-sm font-medium text-green-600">{stat.change}</span>
                 </div>
@@ -195,8 +208,8 @@ export default function AdminPage() {
             </div>
           )}
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          <div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
+            <table className="w-full min-w-[800px]">
               <thead>
                 <tr className="border-b border-gray-200">
                   <th className="text-left py-3 px-4">

@@ -18,6 +18,7 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import Select from '@/components/ui/Select'
 import Badge from '@/components/ui/Badge'
+import { cn } from '@/lib/utils'
 
 interface AuditLog {
   id: string
@@ -139,8 +140,20 @@ export default function AuditLogsPage() {
                   <p className="text-sm text-gray-600 mb-1">{stat.label}</p>
                   <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
                 </div>
-                <div className={`p-3 rounded-xl bg-${stat.color}-100`}>
-                  <stat.icon className={`h-6 w-6 text-${stat.color}-600`} />
+                <div className={cn(
+                  'p-3 rounded-xl',
+                  stat.color === 'blue' && 'bg-blue-100',
+                  stat.color === 'primary' && 'bg-primary-100',
+                  stat.color === 'red' && 'bg-red-100',
+                  stat.color === 'purple' && 'bg-purple-100'
+                )}>
+                  <stat.icon className={cn(
+                    'h-6 w-6',
+                    stat.color === 'blue' && 'text-blue-600',
+                    stat.color === 'primary' && 'text-primary-600',
+                    stat.color === 'red' && 'text-red-600',
+                    stat.color === 'purple' && 'text-purple-600'
+                  )} />
                 </div>
               </div>
             </Card>

@@ -64,19 +64,20 @@ export default function SettingsPage() {
         {/* Sidebar */}
         <div className="lg:col-span-1">
           <Card>
-            <nav className="space-y-1">
+            <nav className="flex lg:flex-col overflow-x-auto lg:overflow-x-visible space-x-2 lg:space-x-0 lg:space-y-1 pb-2 lg:pb-0">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    'w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all',
+                    'flex items-center space-x-3 px-4 py-3 rounded-lg transition-all whitespace-nowrap',
+                    'lg:w-full',
                     activeTab === tab.id
                       ? 'bg-primary-50 text-primary-600'
                       : 'text-gray-700 hover:bg-gray-50'
                   )}
                 >
-                  <tab.icon className="h-5 w-5" />
+                  <tab.icon className="h-5 w-5 flex-shrink-0" />
                   <span className="font-medium">{tab.label}</span>
                 </button>
               ))}

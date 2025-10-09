@@ -100,7 +100,7 @@ export default function SignUpPage() {
                 <Shield className="h-6 w-6 text-white" />
               </motion.div>
               <span className="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
-                MedGuard
+                MedID
               </span>
             </Link>
 
@@ -224,7 +224,7 @@ export default function SignUpPage() {
         >
           <div className="max-w-md">
             <h2 className="text-4xl font-bold text-white mb-6">
-              Join MedGuard Today
+              Join MedID Today
             </h2>
             <p className="text-primary-100 text-lg mb-8">
               Protect yourself and your loved ones with instant access to critical medical information.

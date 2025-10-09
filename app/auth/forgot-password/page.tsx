@@ -113,7 +113,7 @@ export default function ForgotPasswordPage() {
               <Shield className="h-6 w-6 text-white" />
             </motion.div>
             <span className="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
-              MedGuard
+              MedID
             </span>
           </Link>
 
