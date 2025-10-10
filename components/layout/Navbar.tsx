@@ -36,14 +36,14 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 group">
             <motion.div
-              whileHover={{ scale: 1.1, rotate: 360 }}
-              transition={{ duration: 0.5 }}
-              className="p-1.5 bg-primary-600 rounded-lg"
+              whileHover={{ scale: 1.15, rotate: 360 }}
+              transition={{ duration: 0.6, type: "spring", stiffness: 200 }}
+              className="p-1.5 bg-primary-600 rounded-lg shadow-md group-hover:shadow-lg group-hover:shadow-primary-500/30 transition-shadow"
             >
               <Shield className="h-5 w-5 text-white" />
             </motion.div>
             <div>
-              <span className="text-xl font-bold text-gray-900">MedID</span>
+              <span className="text-xl font-bold text-gray-900 group-hover:text-primary-600 transition-colors">MedID</span>
               <span className="hidden sm:inline text-xs text-gray-500 ml-2">Your Life. One Tap Away.</span>
             </div>
           </Link>
@@ -51,19 +51,25 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <Link
+              <motion.div
                 key={link.href}
-                href={link.href}
-                className="text-sm text-gray-700 hover:text-gray-900 transition-colors font-medium"
+                whileHover={{ y: -2 }}
+                transition={{ duration: 0.2 }}
               >
-                {link.label}
-              </Link>
+                <Link
+                  href={link.href}
+                  className="text-sm text-gray-700 hover:text-gray-900 transition-colors font-medium relative group"
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              </motion.div>
             ))}
             <Link href="/auth/signup">
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, y: -2 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-primary-600 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-primary-700 transition-colors shadow-lg shadow-primary-500/20"
+                className="bg-primary-600 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-primary-700 transition-all shadow-lg shadow-primary-500/20 hover:shadow-xl hover:shadow-primary-500/30"
               >
                 Buy
               </motion.button>

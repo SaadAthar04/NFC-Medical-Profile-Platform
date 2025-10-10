@@ -127,15 +127,60 @@ export default function DashboardPage() {
   ]
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      {/* Header */}
+    <div className="max-w-7xl mx-auto space-y-8 relative">
+      {/* Animated background particles */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-primary-300/20 rounded-full"
+            style={{
+              left: `${10 + i * 12}%`,
+              top: `${20 + i * 8}%`,
+            }}
+            animate={{
+              y: [0, -50, 0],
+              opacity: [0.2, 0.5, 0.2],
+            }}
+            transition={{
+              duration: 3 + i * 0.5,
+              repeat: Infinity,
+              delay: i * 0.4,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Header with gradient animation */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        className="relative"
       >
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-        <p className="text-gray-600">Welcome back! Here's an overview of your medical profile.</p>
+        <motion.h1 
+          className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 bg-clip-text text-transparent"
+          animate={{
+            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+          }}
+          transition={{
+            duration: 5,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          style={{ backgroundSize: '200% auto' }}
+        >
+          Dashboard ✨
+        </motion.h1>
+        <p className="text-gray-600 flex items-center gap-2">
+          <motion.span
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            👋
+          </motion.span>
+          Welcome back! Here's an overview of your medical profile.
+        </p>
       </motion.div>
 
       {/* Stats Grid */}
@@ -143,24 +188,58 @@ export default function DashboardPage() {
         {stats.map((stat, index) => (
           <motion.div
             key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ 
+              duration: 0.5, 
+              delay: index * 0.1,
+              type: "spring",
+              stiffness: 200 
+            }}
+            whileHover={{ y: -8, transition: { duration: 0.3 } }}
           >
-            <Card hover>
-              <div className="flex items-center justify-between">
+            <Card className="hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-primary-200 relative overflow-hidden group">
+              {/* Gradient sweep on hover */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-primary-50/0 via-primary-50/50 to-primary-50/0"
+                initial={{ x: '-100%' }}
+                whileHover={{ x: '100%' }}
+                transition={{ duration: 0.8 }}
+              />
+              
+              <div className="flex items-center justify-between relative z-10">
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">{stat.title}</p>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                  <p className={`text-xs mt-1 ${
-                    stat.changeType === 'positive' ? 'text-green-600' : 'text-gray-500'
-                  }`}>
+                  <p className="text-sm text-gray-600 mb-1 font-medium">{stat.title}</p>
+                  <motion.p 
+                    className="text-3xl font-bold text-gray-900"
+                    whileHover={{ scale: 1.1 }}
+                  >
+                    {stat.value}
+                  </motion.p>
+                  <motion.p 
+                    className={`text-xs mt-1 font-semibold ${
+                      stat.changeType === 'positive' ? 'text-green-600' : 'text-gray-500'
+                    }`}
+                    animate={{ opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
                     {stat.change}
-                  </p>
+                  </motion.p>
                 </div>
-                <div className={cn('p-3 rounded-xl', stat.bgColor)}>
+                <motion.div 
+                  className={cn('p-3 rounded-xl shadow-lg', stat.bgColor)}
+                  whileHover={{ scale: 1.2, rotate: 360 }}
+                  transition={{ duration: 0.5 }}
+                  animate={{
+                    boxShadow: [
+                      '0 0 10px rgba(0,0,0,0.1)',
+                      '0 0 20px rgba(59, 130, 246, 0.3)',
+                      '0 0 10px rgba(0,0,0,0.1)',
+                    ]
+                  }}
+                >
                   <stat.icon className={cn('h-6 w-6', stat.color)} />
-                </div>
+                </motion.div>
               </div>
             </Card>
           </motion.div>
@@ -181,19 +260,34 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {quickActions.map((action, index) => (
                 <Link key={index} href={action.href}>
-                  <div className="p-4 rounded-lg border-2 border-gray-200 hover:border-primary-600 transition-all cursor-pointer group">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 ${
-                      action.color === 'primary' ? 'bg-primary-100 text-primary-600' :
-                      action.color === 'blue' ? 'bg-blue-100 text-blue-600' :
-                      'bg-purple-100 text-purple-600'
-                    }`}>
-                      <action.icon className="h-5 w-5" />
+                  <motion.div 
+                    className="p-4 rounded-lg border-2 border-gray-200 hover:border-primary-600 transition-all cursor-pointer group relative overflow-hidden"
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {/* Background glow on hover */}
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-br from-primary-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+                    />
+                    
+                    <div className="relative z-10">
+                      <motion.div 
+                        className={`w-10 h-10 rounded-lg flex items-center justify-center mb-3 shadow-md ${
+                          action.color === 'primary' ? 'bg-primary-100 text-primary-600' :
+                          action.color === 'blue' ? 'bg-blue-100 text-blue-600' :
+                          'bg-purple-100 text-purple-600'
+                        }`}
+                        whileHover={{ rotate: 360, scale: 1.2 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <action.icon className="h-5 w-5" />
+                      </motion.div>
+                      <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-primary-600 transition-colors">
+                        {action.title}
+                      </h3>
+                      <p className="text-sm text-gray-600">{action.description}</p>
                     </div>
-                    <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-primary-600 transition-colors">
-                      {action.title}
-                    </h3>
-                    <p className="text-sm text-gray-600">{action.description}</p>
-                  </div>
+                  </motion.div>
                 </Link>
               ))}
             </div>
@@ -210,20 +304,43 @@ export default function DashboardPage() {
             <h2 className="text-xl font-bold text-gray-900 mb-4">Health Reminders</h2>
             <div className="space-y-3">
               {healthReminders.map((reminder, index) => (
-                <div key={index} className="p-3 bg-gray-50 rounded-lg">
+                <motion.div 
+                  key={index} 
+                  className="p-3 bg-gradient-to-br from-gray-50 to-white rounded-lg border border-gray-200 hover:border-primary-300 transition-all cursor-pointer"
+                  whileHover={{ scale: 1.03, x: 5 }}
+                  animate={{
+                    borderColor: reminder.priority === 'high' ? 
+                      ['rgba(239, 68, 68, 0.2)', 'rgba(239, 68, 68, 0.4)', 'rgba(239, 68, 68, 0.2)'] :
+                      ['rgba(229, 231, 235, 1)', 'rgba(229, 231, 235, 1)', 'rgba(229, 231, 235, 1)']
+                  }}
+                  transition={{ 
+                    borderColor: { duration: 2, repeat: Infinity },
+                    scale: { duration: 0.2 }
+                  }}
+                >
                   <div className="flex items-start justify-between mb-1">
                     <h3 className="font-medium text-gray-900 text-sm">{reminder.title}</h3>
-                    <Badge 
-                      variant={
-                        reminder.priority === 'high' ? 'danger' :
-                        reminder.priority === 'medium' ? 'warning' : 'info'
-                      }
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      animate={{ 
+                        y: reminder.priority === 'high' ? [0, -2, 0] : 0 
+                      }}
+                      transition={{ 
+                        y: { duration: 1.5, repeat: Infinity }
+                      }}
                     >
-                      {reminder.priority}
-                    </Badge>
+                      <Badge 
+                        variant={
+                          reminder.priority === 'high' ? 'danger' :
+                          reminder.priority === 'medium' ? 'warning' : 'info'
+                        }
+                      >
+                        {reminder.priority}
+                      </Badge>
+                    </motion.div>
                   </div>
                   <p className="text-xs text-gray-600">{reminder.description}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </Card>

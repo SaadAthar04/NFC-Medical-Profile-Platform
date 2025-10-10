@@ -16,12 +16,15 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
         ref={ref}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        whileHover={hover ? { y: -5, shadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' } : {}}
+        transition={{ duration: 0.4, ease: "easeOut" }}
+        whileHover={hover ? { 
+          y: -8, 
+          transition: { duration: 0.3, ease: "easeOut" }
+        } : {}}
         className={cn(
-          'bg-white rounded-xl shadow-md p-6 transition-all duration-200',
+          'bg-white rounded-xl shadow-md p-6 transition-all duration-300',
           gradient && 'bg-gradient-to-br from-white to-primary-50',
-          hover && 'hover:shadow-xl cursor-pointer',
+          hover && 'hover:shadow-2xl cursor-pointer hover:border-primary-200',
           className
         )}
         {...(props as any)}

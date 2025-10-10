@@ -123,17 +123,68 @@ export default function EmergencyProfilePage({ params }: { params: { braceletId:
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-red-300/20 rounded-full"
+            style={{
+              left: `${15 + i * 15}%`,
+              top: `${10 + i * 12}%`,
+            }}
+            animate={{
+              y: [0, -40, 0],
+              opacity: [0.2, 0.4, 0.2],
+            }}
+            transition={{
+              duration: 3 + i * 0.5,
+              repeat: Infinity,
+              delay: i * 0.3,
+            }}
+          />
+        ))}
+      </div>
+
       {/* Emergency Banner */}
-      <div className="bg-red-600 text-white py-3">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center space-x-2">
-            <AlertCircle className="h-5 w-5 animate-pulse" />
-            <span className="font-semibold">EMERGENCY MEDICAL PROFILE</span>
-            <AlertCircle className="h-5 w-5 animate-pulse" />
+      <motion.div 
+        className="bg-gradient-to-r from-red-600 via-red-700 to-red-600 text-white py-4 shadow-lg relative overflow-hidden"
+        animate={{
+          backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "linear"
+        }}
+        style={{ backgroundSize: '200% auto' }}
+      >
+        {/* Pulsing overlay */}
+        <motion.div
+          className="absolute inset-0 bg-white"
+          animate={{ opacity: [0, 0.1, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        />
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex items-center justify-center space-x-3">
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <AlertCircle className="h-6 w-6" />
+            </motion.div>
+            <span className="font-bold text-lg tracking-wide">🚨 EMERGENCY MEDICAL PROFILE 🚨</span>
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], rotate: [0, -10, 10, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <AlertCircle className="h-6 w-6" />
+            </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Access Logged Notice */}
@@ -154,31 +205,65 @@ export default function EmergencyProfilePage({ params }: { params: { braceletId:
 
         {/* Patient Info Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.5, type: "spring" }}
         >
-          <Card className="mb-6 bg-gradient-to-r from-red-600 to-red-700 text-white">
-            <div className="flex items-center justify-between">
+          <Card className="mb-6 bg-gradient-to-r from-red-600 via-red-700 to-red-600 text-white shadow-2xl border-2 border-red-500 relative overflow-hidden">
+            {/* Animated glow effect */}
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+              animate={{ x: ['-100%', '100%'] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+            />
+            
+            <div className="flex items-center justify-between relative z-10">
               <div>
-                <h1 className="text-3xl font-bold mb-2">
+                <motion.h1 
+                  className="text-4xl font-bold mb-2"
+                  animate={{ opacity: [0.9, 1, 0.9] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
                   {profile.firstName} {profile.lastName}
-                </h1>
+                </motion.h1>
                 <div className="flex items-center space-x-4 text-red-100">
-                  <span className="flex items-center space-x-1">
+                  <motion.span 
+                    className="flex items-center space-x-1"
+                    whileHover={{ scale: 1.1 }}
+                  >
                     <Calendar className="h-4 w-4" />
                     <span>Age: {calculateAge(profile.dateOfBirth)}</span>
-                  </span>
-                  <span className="flex items-center space-x-1">
+                  </motion.span>
+                  <motion.span 
+                    className="flex items-center space-x-1"
+                    whileHover={{ scale: 1.1 }}
+                  >
                     <Clock className="h-4 w-4" />
                     <span>Accessed: {new Date().toLocaleString()}</span>
-                  </span>
+                  </motion.span>
                 </div>
               </div>
-              <div className="text-center bg-white/20 backdrop-blur-sm rounded-xl p-4">
+              <motion.div 
+                className="text-center bg-white/20 backdrop-blur-sm rounded-2xl p-6 border-2 border-white/30 shadow-2xl"
+                animate={{
+                  boxShadow: [
+                    '0 0 20px rgba(255, 255, 255, 0.3)',
+                    '0 0 30px rgba(255, 255, 255, 0.5)',
+                    '0 0 20px rgba(255, 255, 255, 0.3)',
+                  ]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+                whileHover={{ scale: 1.1 }}
+              >
                 <p className="text-sm text-red-100 mb-1">Blood Type</p>
-                <p className="text-4xl font-bold">{profile.bloodType}</p>
-              </div>
+                <motion.p 
+                  className="text-5xl font-bold"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  {profile.bloodType}
+                </motion.p>
+              </motion.div>
             </div>
           </Card>
         </motion.div>
@@ -188,16 +273,39 @@ export default function EmergencyProfilePage({ params }: { params: { braceletId:
           <div className="lg:col-span-2 space-y-6">
             {/* Allergies - CRITICAL */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.1, type: "spring" }}
+              whileHover={{ scale: 1.02 }}
             >
-              <Card className="border-2 border-red-500">
-                <div className="flex items-center space-x-2 mb-4">
-                  <div className="p-2 bg-red-100 rounded-lg">
-                    <AlertCircle className="h-6 w-6 text-red-600" />
-                  </div>
-                  <h2 className="text-xl font-bold text-gray-900">ALLERGIES - CRITICAL</h2>
+              <Card className="border-4 border-red-500 shadow-xl hover:shadow-2xl hover:shadow-red-500/30 transition-all relative overflow-hidden">
+                {/* Pulsing border effect */}
+                <motion.div
+                  className="absolute inset-0 border-4 border-red-500 rounded-xl"
+                  animate={{
+                    opacity: [0.5, 1, 0.5],
+                  }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                
+                <div className="flex items-center space-x-2 mb-4 relative z-10">
+                  <motion.div 
+                    className="p-3 bg-red-100 rounded-lg shadow-lg"
+                    animate={{
+                      boxShadow: [
+                        '0 0 10px rgba(220, 38, 38, 0.3)',
+                        '0 0 20px rgba(220, 38, 38, 0.6)',
+                        '0 0 10px rgba(220, 38, 38, 0.3)',
+                      ],
+                      rotate: [0, 5, -5, 0],
+                    }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <AlertCircle className="h-7 w-7 text-red-600" />
+                  </motion.div>
+                  <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                    ⚠️ ALLERGIES - CRITICAL
+                  </h2>
                 </div>
                 {profile.allergies.length > 0 ? (
                   <div className="space-y-3">
